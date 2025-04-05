@@ -1,0 +1,8 @@
+- description: A helpful chat assistant
+  model: gpt-4
+  name: ChatAssistant
+  params:
+    max_tokens: 500
+    temperature: 0.7
+  system_prompt: You are a helpful AI assistant.
+  tools: []
