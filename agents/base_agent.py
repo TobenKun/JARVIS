@@ -14,6 +14,6 @@ class BaseAgent(ABC):
         pass
 
     @abstractmethod
-    def capabilities(self):
+    def capabilities(self) -> list[str]:
         """에이전트가 지원하는 기능 목록"""
         pass
