@@ -1,6 +1,6 @@
 import os
 import yaml
-from agents.base import BaseAgent
+from agents.base_agent import BaseAgent
 
 AGENT_STORE_PATH = "data/agents.yaml"
 
