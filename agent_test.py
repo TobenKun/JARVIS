@@ -1,8 +1,10 @@
 import os
 from dotenv import load_dotenv
+from core.agent_broker import AgentBroker
 from model.openrouter_adapter import OpenRouterAdapter
 from agents.default_agent import DefaultAgent
 from agents.agent_factory import AgentFactory
+
 
 # load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 #
@@ -23,10 +25,17 @@ from agents.agent_factory import AgentFactory
 
 load_dotenv()
 
-factory = AgentFactory("config/agents.yaml")
-agents = factory.load_agents()
+# factory = AgentFactory("config/agents.yaml")
+# agents = factory.load_agents()
+#
+# first_respond = agents["researcher"].process("쇼팽의 음악 세계에 대해 알려줘")
+# print(first_respond)
+# print("\n\n 요약중...\n\n")
+# second_respond = agents["summarizer"].process(first_respond)
+# print(second_respond)
 
-first_respond = agents["researcher"].process("모차르트의 음악 세계에 대해 알려줘")
-print(first_respond)
-second_respond = agents["summarizer"].process(first_respond)
-print(second_respond)
+broker = AgentBroker("config/agents.yaml")
+
+input = "사과 2개 더하기 사과 3개는 몇개인지 계산해줘"
+output = broker.ask(input)
+print(output)

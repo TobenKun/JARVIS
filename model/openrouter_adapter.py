@@ -28,14 +28,14 @@ class OpenRouterAdapter(BaseModel):
 
 
 # 테스트용 코드 (나중에 분리 가능)
-if __name__ == "__main__":
-    import os
-    from dotenv import load_dotenv
-
-    load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
-    api_key = os.getenv("OPENROUTER_API_KEY")  # 환경변수로 API 키 설정
-    model = "mistralai/mistral-small-3.1-24b-instruct:free"  # 예시 무료 모델
-
-    adapter = OpenRouterAdapter(api_key=api_key, model=model)
-    result = adapter.generate("고양이의 평균 몸무게에 대해 알려줘")
-    print("응답:", result)
+# if __name__ == "__main__":
+#     import os
+#     from dotenv import load_dotenv
+#
+#     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+#     api_key = os.getenv("OPENROUTER_API_KEY")  # 환경변수로 API 키 설정
+#     model = "mistralai/mistral-small-3.1-24b-instruct:free"  # 예시 무료 모델
+#
+#     adapter = OpenRouterAdapter(api_key=api_key, model=model)
+#     result = adapter.generate("고양이의 평균 몸무게에 대해 알려줘")
+#     print("응답:", result)

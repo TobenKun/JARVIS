@@ -1,43 +1,46 @@
+from agents.agent_factory import AgentFactory
+from agents.base_agent import BaseAgent
+
+
 class AgentBroker:
-    def __init__(self, agent_manager):
-        self.agent_manager = agent_manager
+    def __init__(self, config_path: str):
+        self.factory = AgentFactory(config_path)
+        self.agents: dict[str, BaseAgent] = self.factory.load_agents()
 
-    def analyze_message(self, message):
-        """
-        유저 메시지를 기반으로 어떤 에이전트를 호출할지 결정
-        (지금은 키워드 기반 룰)
-        """
-        message = message.lower()
-        agents_to_call = []
+    def load_agents(self):
+        """에이전트를 이름 기준으로 등록"""
+        self.agents = self.factory.load_agents()
 
-        if "일정" in message or "캘린더" in message:
-            if "CalendarAgent" in self.agent_manager.agents:
-                agents_to_call.append("CalendarAgent")
-        elif "검색" in message:
-            if "SearchAgent" in self.agent_manager.agents:
-                agents_to_call.append("SearchAgent")
-        elif "요약" in message:
-            if "SummaryAgent" in self.agent_manager.agents:
-                agents_to_call.append("SummaryAgent")
+    def get_agent(self, name: str) -> BaseAgent | None:  # TODO: 커스텀 예외로 수정하기
+        """이름으로 에이전트 검색"""
+
+        # check = self.agents.get(name)
+        # if check is None:
+        #     raise ValueError(name + "에이전트가 존재하지 않습니다")
+
+        return self.agents.get(name)
+
+    def ask(self, user_input: str) -> str:
+        """
+        브로커 클래스의 진입점
+        여기서 분석, 라우팅, 에러처리 하면 편할듯
+        """
+        return self.route_request(user_input)
+
+    def route_request(self, user_input: str) -> str:
+        """
+        단순 키워드 기반 라우팅 로직 (임시 버전)
+        추후에 WorkflowManager와 연결해서 더 지능적으로 변경 예정
+        """
+        # 예시: 키워드 기반 분기
+        if "계산" in user_input:
+            agent = self.get_agent("function_agent")
+        elif "요약" in user_input:
+            agent = self.get_agent("summarizer")
         else:
-            # 기본 에이전트로 fallback
-            if "ChatAssistant" in self.agent_manager.agents:
-                agents_to_call.append("ChatAssistant")
+            agent = self.get_agent("researcher")
 
-        return agents_to_call
-
-    def dispatch_message(self, agent_names, message):
-        """
-        에이전트 리스트에 메시지를 순차적으로 전달하고 응답 이어받기
-        """
-        response = message
-        for name in agent_names:
-            agent = self.agent_manager.agents.get(name)
-            if agent:
-                response = agent.run(response)
-        return response
-
-    def send_response(self, response):
-        print("\n📨 최종 응답:\n")
-        print(response)
-
+        if agent:
+            return agent.process(user_input)
+        else:
+            return "요청을 처리할 수 있는 에이전트를 찾지 못했습니다."
