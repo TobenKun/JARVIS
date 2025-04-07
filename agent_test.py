@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from core.work_flow import Workflow
 from core.agent_broker import AgentBroker
 from model.openrouter_adapter import OpenRouterAdapter
 from agents.default_agent import DefaultAgent
@@ -11,7 +12,6 @@ from agents.agent_factory import AgentFactory
 # api_key = os.getenv("OPENROUTER_API_KEY")
 # if api_key is None:
 #     raise ValueError("환경변수가 설정되지 않았습니다.")
-#
 # model = OpenRouterAdapter(
 #     api_key, model="mistralai/mistral-small-3.1-24b-instruct:free"
 # )
@@ -35,7 +35,18 @@ load_dotenv()
 # print(second_respond)
 
 broker = AgentBroker("config/agents.yaml")
+#
+# input = "사과 2개 더하기 사과 3개는 몇개인지 계산해줘"
+# output = broker.ask(input)
+# print(output)
 
-input = "사과 2개 더하기 사과 3개는 몇개인지 계산해줘"
-output = broker.ask(input)
+workflow = Workflow(
+    steps=[
+        broker.get_agent("researcher"),
+        broker.get_agent("summarizer"),
+    ],
+    input_data="샴 고양이에 대해 알려줘",
+)
+
+output = workflow.run()
 print(output)
