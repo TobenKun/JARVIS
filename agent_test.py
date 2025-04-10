@@ -6,6 +6,7 @@ from core.agent_broker import AgentBroker
 from model.openrouter_adapter import OpenRouterAdapter
 from agents.default_agent import DefaultAgent
 from agents.agent_factory import AgentFactory
+from utils.translation import translate_to_en
 
 
 # load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
@@ -25,6 +26,10 @@ from agents.agent_factory import AgentFactory
 #
 
 load_dotenv()
+
+result = translate_to_en("지구의 최초 생명체에 대해 알려줘")
+print(result)
+exit(0)
 
 # factory = AgentFactory("config/agents.yaml")
 # agents = factory.load_agents()
