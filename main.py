@@ -1,42 +1,33 @@
-import sys
-from core.agent_manager import AgentManager
+import os
+from dotenv import load_dotenv
+
 from core.agent_broker import AgentBroker
-
-
-def test_agent(config_path, test_message):
-    manager = AgentManager()
-    manager.add_agent(config_path)
-    broker = AgentBroker(manager)
-
-    agent_list = broker.analyze_message(test_message)
-    print(f"[DEBUG] 선택된 에이전트: {agent_list}")
-
-    response = broker.dispatch_message(agent_list, test_message)
-    broker.send_response(response)
+from core.conductor import Conductor  # 우리가 만든 지휘자
 
 
 def main():
-    manager = AgentManager()
+    # 1. 환경 변수 로드
+    load_dotenv()
+    config_path = "config/agents.yaml"
 
-    if len(sys.argv) < 2:
-        print("Usage: python main.py [add|remove|list] [args...]")
-        return
+    # 2. 브로커 및 컨덕터 초기화
+    broker = AgentBroker(config_path=config_path)
+    conductor = Conductor(broker)
 
-    command = sys.argv[1]
+    # 3. 유저 입력 받기
+    while True:
+        user_input = input("👤 사용자 입력: ")
+        if user_input.lower() in ["exit", "quit"]:
+            break
 
-    if command == "add" and len(sys.argv) == 3:
-        manager.add_agent(sys.argv[2])
-    elif command == "remove" and len(sys.argv) == 3:
-        manager.remove_agent(sys.argv[2])
-    elif command == "list":
-        agents = manager.list_agents()
-        for agent in agents:
-            print(agent)
-    elif command == "test" and len(sys.argv) == 4:
-        test_agent(sys.argv[2], sys.argv[3])
-    else:
-        print("Invalid command or arguments.")
+        # 4. 컨덕터에 전달해서 응답 받기
+        try:
+            response = conductor.handle(user_input)
+            print(f"🤖 응답: {response}")
+        except Exception as e:
+            print(f"⚠️ 에러: {e}")
 
 
 if __name__ == "__main__":
     main()
+

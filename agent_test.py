@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from core.conductor import Conductor
 from core.work_flow import Workflow
 from core.agent_broker import AgentBroker
 from model.openrouter_adapter import OpenRouterAdapter
@@ -40,13 +41,6 @@ broker = AgentBroker("config/agents.yaml")
 # output = broker.ask(input)
 # print(output)
 
-workflow = Workflow(
-    steps=[
-        broker.get_agent("researcher"),
-        broker.get_agent("summarizer"),
-    ],
-    input_data="샴 고양이에 대해 알려줘",
-)
-
-output = workflow.run()
-print(output)
+conductor = Conductor(broker)
+result = conductor.handle("인류의 발전 과정에 대해 조사하고 요약해줘")
+print(result)

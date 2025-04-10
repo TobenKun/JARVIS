@@ -2,6 +2,9 @@ from core.work_flow import Workflow
 from core.agent_broker import AgentBroker
 
 
+# TODO: LLM 기반 판단 로직 도입
+#       워크플로우 실행 전에 유저 인풋 전처리
+#       실패한 스텝 처리
 class Conductor:
     def __init__(self, broker: AgentBroker):
         self.broker = broker
