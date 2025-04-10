@@ -12,6 +12,9 @@ class Workflow:
         result = self.input_data
 
         for agent in self.steps:
+            print(agent.name)
+            print("input: " + result)
+            print()
             result = agent.process(result)
 
         return result

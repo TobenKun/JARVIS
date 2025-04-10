@@ -6,7 +6,7 @@ from core.agent_broker import AgentBroker
 from model.openrouter_adapter import OpenRouterAdapter
 from agents.default_agent import DefaultAgent
 from agents.agent_factory import AgentFactory
-from utils.translation import translate_to_en
+from utils.translation import Translator
 
 
 # load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
@@ -27,10 +27,6 @@ from utils.translation import translate_to_en
 
 load_dotenv()
 
-result = translate_to_en("지구의 최초 생명체에 대해 알려줘")
-print(result)
-exit(0)
-
 # factory = AgentFactory("config/agents.yaml")
 # agents = factory.load_agents()
 #
@@ -40,12 +36,12 @@ exit(0)
 # second_respond = agents["summarizer"].process(first_respond)
 # print(second_respond)
 
-broker = AgentBroker("config/agents.yaml")
-#
-# input = "사과 2개 더하기 사과 3개는 몇개인지 계산해줘"
-# output = broker.ask(input)
-# print(output)
+config_path = "config/agents.yaml"
+deepl_api_key = os.getenv("DEEPL_API_KEY")
 
-conductor = Conductor(broker)
+translator = Translator(deepl_api_key)
+broker = AgentBroker(config_path)
+conductor = Conductor(broker, translator)
+
 result = conductor.handle("인류의 발전 과정에 대해 조사하고 요약해줘")
 print(result)

@@ -26,6 +26,8 @@ class OpenRouterAdapter(BaseModel):
         data = response.json()
         if "choices" not in data:
             error_message = data.get("error", {}).get("message", "Unknown error")
+            print("ERROR")
+            print(data)
             raise RuntimeError(f"OpenRouter 응답오류: {error_message}")
 
         return data["choices"][0]["message"]["content"]
