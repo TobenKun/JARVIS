@@ -1,33 +1,38 @@
 import os
+from fastapi import FastAPI
+from pydantic import BaseModel
+from core import Conductor, AgentBroker
+from agents.agent_factory import AgentFactory
+from utils.translation import Translator
 from dotenv import load_dotenv
 
-from core.agent_broker import AgentBroker
-from core.conductor import Conductor  # 우리가 만든 지휘자
+load_dotenv()
 
+app = FastAPI()
 
-def main():
-    # 1. 환경 변수 로드
-    load_dotenv()
-    config_path = "config/agents.yaml"
+deepl_api_key = os.getenv("DEEPL_API_KEY")
 
-    # 2. 브로커 및 컨덕터 초기화
-    broker = AgentBroker(config_path=config_path)
-    conductor = Conductor(broker)
+# 초기화
+factory = AgentFactory()
+broker = AgentBroker()
+translator = Translator(deepl_api_key)
+conductor = Conductor(broker, translator)
 
-    # 3. 유저 입력 받기
-    while True:
-        user_input = input("👤 사용자 입력: ")
-        if user_input.lower() in ["exit", "quit"]:
-            break
+class RunInput(BaseModel):
+    user_input: str
 
-        # 4. 컨덕터에 전달해서 응답 받기
-        try:
-            response = conductor.handle(user_input)
-            print(f"🤖 응답: {response}")
-        except Exception as e:
-            print(f"⚠️ 에러: {e}")
+class RunOutput(BaseModel):
+    result: str
 
+@app.post("/run", response_model=RunOutput)
+def run_jarvis(input: RunInput):
+    result = conductor.handle(input.user_input)
+    return RunOutput(result=result)
 
-if __name__ == "__main__":
-    main()
+@app.get("/agents")
+def get_agents():
+    return {"agents": broker.list_agents()}
 
+@app.get("/planner")
+def get_planner():
+    return {"planner": broker.get_planner().name}

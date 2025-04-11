@@ -8,7 +8,7 @@ from agents.base_agent import BaseAgent
 
 
 class AgentBroker:
-    def __init__(self, config_path: str):
+    def __init__(self):
         self.factory = AgentFactory()
         self.agents: dict[str, BaseAgent] = self.factory.load_agents()
         self.planner = self.factory.load_planner() #agents딕셔너리와는 분리해서 저장
