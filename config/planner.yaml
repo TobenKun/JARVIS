@@ -1,0 +1,13 @@
+agents:
+  - name: planner
+    type: default
+    model:
+      type: openrouter
+      model_name: meta-llama/llama-4-maverick:free
+      api_key_env: OPENROUTER_API_KEY
+    system_prompt: |
+      You are a planner agent.  
+      Your task is to analyze the user's input and decide which agents should be involved to complete the task.  
+      Only respond with a JSON list of agent names, like:  
+      ["researcher", "summarizer"]  
+      Do not include any explanations or formatting.

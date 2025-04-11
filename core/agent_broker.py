@@ -9,17 +9,22 @@ from agents.base_agent import BaseAgent
 
 class AgentBroker:
     def __init__(self, config_path: str):
-        self.factory = AgentFactory(config_path)
+        self.factory = AgentFactory()
         self.agents: dict[str, BaseAgent] = self.factory.load_agents()
+        self.planner = self.factory.load_planner() #agents딕셔너리와는 분리해서 저장
 
     def reload_agents(self):
-        """에이전트 목록 전체를 리로드"""
+        """에이전트 목록과 플래너 전체를 리로드"""
         self.agents = self.factory.load_agents()
+        self.planner = self.factory.load_agents()
 
     def get_agent(self, name: str) -> BaseAgent | None:
         # TODO: 커스텀 예외로 수정하기
         """이름으로 에이전트 검색"""
         return self.agents.get(name)
+
+    def get_planner(self) -> BaseAgent:
+        return self.planner
 
     def has_agent(self, name: str) -> bool:
         """해당 이름의 에이전트가 존재하는지 확인"""
