@@ -1,5 +1,9 @@
 import os
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
 from pydantic import BaseModel
 from core import Conductor, AgentBroker
 from agents.agent_factory import AgentFactory
@@ -9,6 +13,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 deepl_api_key = os.getenv("DEEPL_API_KEY")
 
@@ -36,3 +42,7 @@ def get_agents():
 @app.get("/planner")
 def get_planner():
     return {"planner": broker.get_planner().name}
+
+@app.get("/", response_class=HTMLResponse)
+def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
