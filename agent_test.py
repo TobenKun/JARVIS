@@ -43,5 +43,5 @@ translator = Translator(deepl_api_key)
 broker = AgentBroker(config_path)
 conductor = Conductor(broker, translator)
 
-result = conductor.handle("인류의 발전 과정에 대해 조사하고 요약해줘")
+result = conductor.handle("test input dude!")
 print(result)

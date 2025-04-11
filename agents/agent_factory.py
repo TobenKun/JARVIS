@@ -18,7 +18,7 @@ MODEL_TYPE_MAP = {
 class AgentFactory:
     def __init__(self, config_path: str):
         self.config_path = config_path
-        self.test_flag = os.getenv("USE_MOCK_AGENT").lower() == "true"
+        self.test_flag = os.getenv("USE_MOCK_AGENT", "false").lower() == "true"
 
     def load_agents(self) -> dict:
         with open(self.config_path, "r") as file:
@@ -34,11 +34,11 @@ class AgentFactory:
     def _create_agent(self, config: dict) -> BaseAgent:
         agent_class = AGENT_TYPE_MAP[config["type"]]
 
-        if test_flag:
-            print("")
+        model_config = config["model"]
+
+        if self.test_flag:
             model = DummyModel()
         else:
-            model_config = config["model"]
 
             model_class = MODEL_TYPE_MAP[model_config["type"]]
             api_key = os.getenv(model_config["api_key_env"])
