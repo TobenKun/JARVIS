@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jarvis Chat</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f8f8f8; }
+    .chat-box { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    .message { margin-bottom: 10px; }
+    .user { font-weight: bold; color: #1a73e8; }
+    .agent-step { margin-left: 20px; margin-top: 5px; background: #f0f0f0; padding: 10px; border-radius: 5px; display: none; }
+    .final-result { background: #e6ffe6; padding: 10px; border-left: 4px solid green; margin-top: 20px; border-radius: 5px; }
+    .toggle { color: #888; cursor: pointer; font-size: 14px; }
+	.agent-step {
+		padding: 0.5rem;
+		background-color: #f6f8fa;
+		border-radius: 5px;
+		margin-top: 5px;
+		font-family: "Courier New", monospace;
+	}
+		.agent-step h1, .agent-step h2 {
+		font-size: 1.1rem;
+		margin-bottom: 0.5rem;
+	}
+		.agent-step code {
+		background-color: #eee;
+		padding: 2px 4px;
+		border-radius: 3px;
+	}		
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <h2>🧠 Jarvis Multi-Agent Chat</h2>
+    <div id="chat-log"></div>
+    <textarea id="user-input" rows="3" style="width: 100%;" placeholder="Ask something..."></textarea>
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("user-input").value;
+      if (!input.trim()) return;
+
+      const chatLog = document.getElementById("chat-log");
+      chatLog.innerHTML += `<div class="message"><span class="user">You:</span> ${input}</div>`;
+
+      document.getElementById("user-input").value = "";
+
+      try {
+        const res = await axios.post("/run", { user_input: input });
+        const result = res.data;
+
+        // Agent steps
+        if (result.steps && Array.isArray(result.steps)) {
+          result.steps.forEach(step => {
+            const stepId = `step-${step.agent}-${Math.random().toString(36).substr(2, 5)}`;
+            chatLog.innerHTML += `
+              <div class="message">
+                <b>${step.agent}</b>
+                <span class="toggle" onclick="toggleStep('${stepId}')">[show]</span>
+                <div class="agent-step" id="${stepId}">${marked.parse(step.output)}</div>
+              </div>
+            `;
+          });
+        }
+
+        // Final result
+        chatLog.innerHTML += `
+          <div class="final-result">
+            <b>✅ Final Answer:</b> ${marked.parse(result.result)}
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        alert("Error calling API");
+      }
+    }
+
+    function toggleStep(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === "none") {
+        el.style.display = "block";
+      } else {
+        el.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
