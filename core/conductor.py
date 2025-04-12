@@ -67,12 +67,12 @@ class Conductor:
             workflow = self.compose_workflow(user_input)
         else:
             english_input = self.translator.to_english(user_input)
-            #print("## TRANSLATED INPUT: " + english_input)
             workflow = self.compose_workflow(english_input)
 
         result = workflow.run()
 
         if not self.test_flag:
-            result = self.translator.to_korean(result)
+            result["result"] = self.translator.to_korean(result["result"])
+            print("### TRANSLATED RESULT ###\n" + result["result"])
 
         return result

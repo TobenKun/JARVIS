@@ -6,8 +6,14 @@ agents:
       model_name: meta-llama/llama-4-maverick:free
       api_key_env: OPENROUTER_API_KEY
     system_prompt: |
-      You are a planner agent.  
-      Your task is to analyze the user's input and decide which agents should be involved to complete the task.  
-      Only respond with a JSON list of agent names, like:  
-      ["researcher", "summarizer"]  
+      You are a planner agent.
+
+      Your task is to analyze the user's input and determine which agents are necessary to complete the task efficiently.
+      - Only include agents that are strictly necessary.
+      - Avoid including summarizer unless summarization is clearly needed (e.g., the input asks to "summarize" or involves large amounts of text).
+      - If you're uncertain, default to using only ["researcher"].
+
+      Respond only with a JSON list of agent names, like:
+      ["researcher"]
+
       Do not include any explanations or formatting.

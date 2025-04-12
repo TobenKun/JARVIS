@@ -7,14 +7,28 @@ class Workflow:
     def __init__(self, steps: list[BaseAgent], input_data: str):
         self.steps = steps
         self.input_data = input_data
+        self.outputs = []
 
     def run(self) -> str:
         result = self.input_data
 
         for agent in self.steps:
+
             print(agent.name)
             print("input: " + result)
             print()
-            result = agent.process(result)
 
-        return result
+            output = agent.process(result)
+
+            self.outputs.append({
+                "agent": agent.name,
+                "output": output,
+            })
+
+            result = output
+
+
+        return {
+            "result": result,
+            "steps": self.outputs
+        }

@@ -40,8 +40,8 @@ config_path = "config/agents.yaml"
 deepl_api_key = os.getenv("DEEPL_API_KEY")
 
 translator = Translator(deepl_api_key)
-broker = AgentBroker(config_path)
+broker = AgentBroker()
 conductor = Conductor(broker, translator)
 
-result = conductor.handle("고구마")
+result = conductor.handle("세계2차대전에대해 설명해줘")
 print(result)

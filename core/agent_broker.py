@@ -15,6 +15,7 @@ class AgentBroker:
 
     def reload_agents(self):
         """에이전트 목록과 플래너 전체를 리로드"""
+        print("✅ AgentBroker updated with new config.")
         self.agents = self.factory.load_agents()
         self.planner = self.factory.load_agents()
 

@@ -15,10 +15,10 @@ agents:
       api_key_env: OPENROUTER_API_KEY
     system_prompt: "You are a concise summarizer."
 
-  - name: function_agent
+  - name: coder
     type: default
     model:
       type: openrouter
       model_name: meta-llama/llama-4-maverick:free
       api_key_env: OPENROUTER_API_KEY
-    system_prompt: "You are a smart calculator."
+    system_prompt: "You are a computer developer."
