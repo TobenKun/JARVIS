@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package agent;
+
+service AgentService {
+  // 기본 처리 요청
+  rpc Process(UserInput) returns (AgentResponse);
+
+  // 이 에이전트가 가진 기능 리스트
+  rpc Capabilities(Empty) returns (CapabilitiesResponse);
+}
+
+message UserInput { string user_input = 1; }
+
+message AgentResponse { string response = 1; }
+
+message CapabilitiesResponse { repeated string capabilities = 1; }
+
+message Empty {}
